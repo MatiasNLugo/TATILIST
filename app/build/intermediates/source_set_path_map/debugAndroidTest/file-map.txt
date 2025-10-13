@@ -1,0 +1,4 @@
+com.example.tatilist.test.app-androidTest-0 /home/Matias/Proyectos/TaskExpenseManager/app/build/generated/res/resValues/androidTest/debug
+com.example.tatilist.test.app-mergeDebugAndroidTestResources-1 /home/Matias/Proyectos/TaskExpenseManager/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+com.example.tatilist.test.app-mergeDebugAndroidTestResources-2 /home/Matias/Proyectos/TaskExpenseManager/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+com.example.tatilist.test.app-merged_res-3 /home/Matias/Proyectos/TaskExpenseManager/app/build/intermediates/merged_res/debugAndroidTest

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TATILIST</string>
+    
+    <string-array name="priority_array">
+        <item>Alta</item>
+        <item>Media</item>
+        <item>Baja</item>
+        <item>Sin prioridad</item>
+    </string-array>
+    
+    <string-array name="category_array">
+        <item>Servicios</item>
+        <item>Alimentación</item>
+        <item>Tarjeta de Crédito</item>
+        <item>Transporte</item>
+        <item>Salud</item>
+        <item>Educación</item>
+        <item>Entretenimiento</item>
+        <item>Compras</item>
+        <item>Hogar</item>
+        <item>Otros</item>
+    </string-array>
+</resources>

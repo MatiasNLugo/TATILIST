@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="category_array">
+        <item>Servicios</item>
+        <item>Alimentación</item>
+        <item>Tarjeta de Crédito</item>
+        <item>Transporte</item>
+        <item>Salud</item>
+        <item>Educación</item>
+        <item>Entretenimiento</item>
+        <item>Compras</item>
+        <item>Hogar</item>
+        <item>Otros</item>
+    </string-array>
+    <string-array name="priority_array">
+        <item>Alta</item>
+        <item>Media</item>
+        <item>Baja</item>
+        <item>Sin prioridad</item>
+    </string-array>
+    <color name="ic_launcher_background">#A1B827</color>
+    <color name="on_surface">#212121</color>
+    <color name="outline">#BDBDBD</color>
+    <color name="primary">#a1b827</color>
+    <color name="primary_dark">#8a9e1f</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#F5F5F5</color>
+    <string name="app_name">TATILIST</string>
+    <string name="gcm_defaultSenderId" translatable="false">376889622771</string>
+    <string name="google_api_key" translatable="false">AIzaSyDIMcFU2-PDBcIHmSxqU5TzdtWFdYQyciA</string>
+    <string name="google_app_id" translatable="false">1:376889622771:android:65e3cddc747224d461b786</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDIMcFU2-PDBcIHmSxqU5TzdtWFdYQyciA</string>
+    <string name="google_storage_bucket" translatable="false">tatilist-7e9a4.firebasestorage.app</string>
+    <string name="project_id" translatable="false">tatilist-7e9a4</string>
+    <style name="RoundedButton" parent="Widget.Material3.Button">
+        <item name="cornerRadius">24dp</item>
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingRight">24dp</item>
+    </style>
+    <style name="Theme.TATILIST" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/outline</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/outline</item>
+        <item name="android:colorBackground">@color/outline</item>
+    </style>
+</resources>
