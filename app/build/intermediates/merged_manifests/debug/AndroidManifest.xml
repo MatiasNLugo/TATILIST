@@ -36,6 +36,7 @@
         android:label="TATILIST"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:testOnly="true"
         android:theme="@style/Theme.TATILIST"
         android:usesCleartextTraffic="true" >
         <activity

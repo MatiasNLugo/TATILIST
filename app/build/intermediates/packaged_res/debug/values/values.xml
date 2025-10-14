@@ -18,13 +18,36 @@
         <item>Baja</item>
         <item>Sin prioridad</item>
     </string-array>
+    <color name="background">#FFFBFF</color>
+    <color name="error">#BA1A1A</color>
+    <color name="error_container">#FFDAD6</color>
     <color name="ic_launcher_background">#A1B827</color>
-    <color name="on_surface">#212121</color>
-    <color name="outline">#BDBDBD</color>
+    <color name="inverse_on_surface">#F4EFF4</color>
+    <color name="inverse_primary">#c7e054</color>
+    <color name="inverse_surface">#313033</color>
+    <color name="on_background">#1C1B1F</color>
+    <color name="on_error">#FFFFFF</color>
+    <color name="on_error_container">#410002</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="on_primary_container">#2e3100</color>
+    <color name="on_secondary">#FFFFFF</color>
+    <color name="on_secondary_container">#241b0b</color>
+    <color name="on_surface">#1C1B1F</color>
+    <color name="on_surface_variant">#49454F</color>
+    <color name="on_tertiary">#FFFFFF</color>
+    <color name="on_tertiary_container">#2e1228</color>
+    <color name="outline">#79747E</color>
+    <color name="outline_variant">#CBC2CF</color>
     <color name="primary">#a1b827</color>
-    <color name="primary_dark">#8a9e1f</color>
-    <color name="surface">#FFFFFF</color>
-    <color name="surface_variant">#F5F5F5</color>
+    <color name="primary_container">#c7e054</color>
+    <color name="scrim">#000000</color>
+    <color name="secondary">#6a5e4a</color>
+    <color name="secondary_container">#f3e2c7</color>
+    <color name="shadow">#000000</color>
+    <color name="surface">#FFFBFF</color>
+    <color name="surface_variant">#E7E0EC</color>
+    <color name="tertiary">#7a546f</color>
+    <color name="tertiary_container">#ffd8f1</color>
     <string name="app_name">TATILIST</string>
     <string name="gcm_defaultSenderId" translatable="false">376889622771</string>
     <string name="google_api_key" translatable="false">AIzaSyDIMcFU2-PDBcIHmSxqU5TzdtWFdYQyciA</string>
@@ -32,17 +55,33 @@
     <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDIMcFU2-PDBcIHmSxqU5TzdtWFdYQyciA</string>
     <string name="google_storage_bucket" translatable="false">tatilist-7e9a4.firebasestorage.app</string>
     <string name="project_id" translatable="false">tatilist-7e9a4</string>
-    <style name="RoundedButton" parent="Widget.Material3.Button">
-        <item name="cornerRadius">24dp</item>
-        <item name="android:paddingLeft">24dp</item>
-        <item name="android:paddingRight">24dp</item>
-    </style>
-    <style name="Theme.TATILIST" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Theme.TATILIST" parent="Theme.Material3.DayNight.NoActionBar">
+        
+        
         <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorOnPrimary">@color/outline</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        <item name="colorPrimaryContainer">@color/primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@color/on_secondary</item>
+        <item name="colorSecondaryContainer">@color/secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/on_secondary_container</item>
+        <item name="colorTertiary">@color/tertiary</item>
+        <item name="colorOnTertiary">@color/on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/on_tertiary_container</item>
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/on_error</item>
+        <item name="colorErrorContainer">@color/error_container</item>
+        <item name="colorOnErrorContainer">@color/on_error_container</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorOnBackground">@color/on_background</item>
         <item name="colorSurface">@color/surface</item>
-        <item name="colorOnSurface">@color/outline</item>
-        <item name="android:colorBackground">@color/outline</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
+        <item name="colorOutline">@color/outline</item>
+        <item name="colorOutlineVariant">@color/outline_variant</item>
+
     </style>
 </resources>

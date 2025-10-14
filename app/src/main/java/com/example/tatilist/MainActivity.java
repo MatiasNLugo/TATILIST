@@ -1,40 +1,23 @@
 package com.example.tatilist;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.*;
-
-import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import android.text.Editable;
-import android.text.TextWatcher;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -49,16 +32,11 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences prefs;
     private ValueEventListener tasksListener;
 
-    private static final int CALENDAR_PERMISSION_CODE = 101;
-    private static final String CHANNEL_ID = "TATILIST_CHANNEL";
-
-    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        createNotificationChannel();
-        prefs = getSharedPreferences("TATILIST_PREFS", MODE_PRIVATE);
+        prefs = getSharedPreferences("tatilist", MODE_PRIVATE);
         currentListId = prefs.getString("listId", null);
         if (currentListId == null) {
             currentListId = UUID.randomUUID().toString();
@@ -67,12 +45,25 @@ public class MainActivity extends AppCompatActivity {
         databaseRef = FirebaseDatabase.getInstance().getReference();
         allTasks = new ArrayList<>();
         initViews();
-        setupFirebaseListener();
         setupTabLayout();
     }
 
-    @SuppressLint("SetTextI18n")
-    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (currentListId != null && !currentListId.isEmpty()) {
+            setupFirebaseListener(); // ← Solo si hay lista válida
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (tasksListener != null) {
+            databaseRef.removeEventListener(tasksListener);
+        }
+    }
+
     private void initViews() {
         recyclerView = findViewById(R.id.recyclerView);
         fabAddTask = findViewById(R.id.fabAddTask);
@@ -81,13 +72,41 @@ public class MainActivity extends AppCompatActivity {
         tvSharedWith = findViewById(R.id.tvSharedWith);
         btnShareList = findViewById(R.id.btnShareList);
         btnJoinList = findViewById(R.id.btnJoinList);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         taskAdapter = new TaskAdapter(allTasks, this);
         recyclerView.setAdapter(taskAdapter);
-        tvSharedWith.setText(MessageFormat.format("Lista ID: {0}...", currentListId.substring(0, 8)));
-        fabAddTask.setOnClickListener(v -> showAddTaskDialog());
-        btnShareList.setOnClickListener(v -> shareListId());
+
+        updateHeader();
+
+        fabAddTask.setOnClickListener(v -> {
+            if (currentListId == null || currentListId.isEmpty()) {
+                Toast.makeText(this, "⚠️ Primero únete a una lista", Toast.LENGTH_SHORT).show();
+                showJoinListDialog();
+                return;
+            }
+            showAddTaskDialog();
+        });
+
+        btnShareList.setOnClickListener(v -> {
+            if (currentListId != null && !currentListId.isEmpty()) {
+                shareListId();
+            } else {
+                Toast.makeText(this, "No hay lista activa", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         btnJoinList.setOnClickListener(v -> showJoinListDialog());
+    }
+
+    private void updateHeader() {
+        if (currentListId != null && !currentListId.isEmpty()) {
+            tvSharedWith.setText("Lista ID: " + currentListId.substring(0, 8) + "...");
+            btnShareList.setEnabled(true);
+        } else {
+            tvSharedWith.setText("⚠️ Sin lista. Únete o crea una.");
+            btnShareList.setEnabled(false);
+        }
     }
 
     private void setupFirebaseListener() {
@@ -112,9 +131,11 @@ public class MainActivity extends AppCompatActivity {
                 updateTotalExpenses();
                 updateSharedUsersList();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(MainActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Firebase Error: " + error.getMessage(),
+                        Toast.LENGTH_SHORT).show();
             }
         };
         databaseRef.addValueEventListener(tasksListener);
@@ -137,9 +158,9 @@ public class MainActivity extends AppCompatActivity {
     private void shareListId() {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Compartir Lista TATILIST");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Compartir Lista de Tareas");
         shareIntent.putExtra(Intent.EXTRA_TEXT,
-                "Únete a mi lista TATILIST!\n\nID: " + currentListId + "\n\nUsa este ID en la app.");
+                currentListId );
         startActivity(Intent.createChooser(shareIntent, "Compartir lista"));
     }
 
@@ -148,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_join_list, null);
         EditText etListId = dialogView.findViewById(R.id.etListId);
         builder.setView(dialogView)
-                .setTitle("Unirse a Lista TATILIST")
+                .setTitle("Unirse a Lista Compartida")
                 .setPositiveButton("Unirse", (dialog, which) -> {
                     String newListId = etListId.getText().toString().trim();
                     if (!newListId.isEmpty()) {
@@ -173,11 +194,12 @@ public class MainActivity extends AppCompatActivity {
                             databaseRef.child("lists").child(currentListId)
                                     .child("users").child(userId).setValue(true);
                             Toast.makeText(MainActivity.this,
-                                    "Te has unido a la lista correctamente", Toast.LENGTH_SHORT).show();
+                                    "✅ Te has unido a la lista", Toast.LENGTH_SHORT).show();
+                            updateHeader();
                             recreate();
                         } else {
                             Toast.makeText(MainActivity.this,
-                                    "La lista no existe", Toast.LENGTH_SHORT).show();
+                                    "❌ La lista no existe", Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
@@ -214,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void filterTasks(int position) {
+        if (currentListId == null) return;
         databaseRef.child("lists").child(currentListId).child("tasks")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -255,7 +278,6 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     private void showAddTaskDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_task, null);
@@ -266,18 +288,6 @@ public class MainActivity extends AppCompatActivity {
         Spinner spinnerCategory = dialogView.findViewById(R.id.spinnerCategory);
         Button btnSelectDate = dialogView.findViewById(R.id.btnSelectDate);
         CheckBox cbRecurring = dialogView.findViewById(R.id.cbRecurring);
-        RecyclerView rvSubtasks = dialogView.findViewById(R.id.rvSubtasks);
-        Button btnAddSubtask = dialogView.findViewById(R.id.btnAddSubtask);
-
-        List<Subtask> subtasks = new ArrayList<>();
-        SubtaskAdapter subtaskAdapter = new SubtaskAdapter(subtasks);
-        rvSubtasks.setLayoutManager(new LinearLayoutManager(this));
-        rvSubtasks.setAdapter(subtaskAdapter);
-
-        btnAddSubtask.setOnClickListener(v -> {
-            subtasks.add(new Subtask("", 0.0, false));
-            subtaskAdapter.notifyItemInserted(subtasks.size() - 1);
-        });
 
         ArrayAdapter<CharSequence> priorityAdapter = ArrayAdapter.createFromResource(this,
                 R.array.priority_array, android.R.layout.simple_spinner_item);
@@ -317,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
                     boolean isRecurring = cbRecurring.isChecked();
 
                     Task task = new Task(title, description, selectedDate[0], priority,
-                            false, expense, category, isRecurring, subtasks);
+                            false, expense, category, isRecurring);
 
                     String taskId = databaseRef.child("lists").child(currentListId)
                             .child("tasks").push().getKey();
@@ -327,61 +337,16 @@ public class MainActivity extends AppCompatActivity {
                         String userId = UUID.randomUUID().toString();
                         databaseRef.child("lists").child(currentListId)
                                 .child("users").child(userId).setValue(true);
-                        showNotification("✅ Nueva tarea creada", title);
-                        if (selectedDate[0] != null) {
-                            requestCalendarPermissionAndAddEvent(task);
-                        }
                     }
                 })
                 .setNegativeButton("Cancelar", null)
                 .show();
     }
 
-    private void requestCalendarPermissionAndAddEvent(Task task) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_CALENDAR}, CALENDAR_PERMISSION_CODE);
-        } else {
-            addEventToCalendar(task);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CALENDAR_PERMISSION_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // No tenemos la tarea específica aquí, así que no agregamos evento
-                // (opcional: podrías guardar en SharedPreferences para procesar después)
-            }
-        }
-    }
-
-    private void addEventToCalendar(Task task) {
-        if (task.getDueDate() == null) return;
-        ContentValues values = new ContentValues();
-        values.put(CalendarContract.Events.DTSTART, task.getDueDate());
-        values.put(CalendarContract.Events.DTEND, task.getDueDate() + 3600000);
-        values.put(CalendarContract.Events.TITLE, task.getTitle());
-        values.put(CalendarContract.Events.DESCRIPTION, task.getDescription());
-        values.put(CalendarContract.Events.CALENDAR_ID, 1);
-        values.put(CalendarContract.Events.EVENT_TIMEZONE, "UTC");
-        Uri uri = getContentResolver().insert(CalendarContract.Events.CONTENT_URI, values);
-        if (uri != null) {
-            Toast.makeText(this, "📅 Añadido al calendario", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     public void updateTask(Task task) {
         if (task.getFirebaseKey() != null) {
             databaseRef.child("lists").child(currentListId)
                     .child("tasks").child(task.getFirebaseKey()).setValue(task);
-            if (task.isCompleted()) {
-                showNotification("✔️ Tarea completada", task.getTitle());
-            }
         }
     }
 
@@ -402,24 +367,12 @@ public class MainActivity extends AppCompatActivity {
         Spinner spinnerCategory = dialogView.findViewById(R.id.spinnerCategory);
         Button btnSelectDate = dialogView.findViewById(R.id.btnSelectDate);
         CheckBox cbRecurring = dialogView.findViewById(R.id.cbRecurring);
-        RecyclerView rvSubtasks = dialogView.findViewById(R.id.rvSubtasks);
-        Button btnAddSubtask = dialogView.findViewById(R.id.btnAddSubtask);
 
         etTitle.setText(task.getTitle());
         etDescription.setText(task.getDescription());
         if (task.getExpense() > 0) {
             etExpense.setText(String.valueOf(task.getExpense()));
         }
-
-        List<Subtask> subtasks = new ArrayList<>(task.getSubtasks());
-        SubtaskAdapter subtaskAdapter = new SubtaskAdapter(subtasks);
-        rvSubtasks.setLayoutManager(new LinearLayoutManager(this));
-        rvSubtasks.setAdapter(subtaskAdapter);
-
-        btnAddSubtask.setOnClickListener(v -> {
-            subtasks.add(new Subtask("", 0.0, false));
-            subtaskAdapter.notifyItemInserted(subtasks.size() - 1);
-        });
 
         ArrayAdapter<CharSequence> priorityAdapter = ArrayAdapter.createFromResource(this,
                 R.array.priority_array, android.R.layout.simple_spinner_item);
@@ -470,17 +423,6 @@ public class MainActivity extends AppCompatActivity {
                     task.setCategory(spinnerCategory.getSelectedItem().toString());
                     task.setDueDate(selectedDate[0]);
                     task.setRecurring(cbRecurring.isChecked());
-                    task.setSubtasks(subtasks);
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return;
-                    }
                     updateTask(task);
                 })
                 .setNegativeButton("Cancelar", null)
@@ -500,42 +442,9 @@ public class MainActivity extends AppCompatActivity {
                     total += task.getExpense();
                 }
             }
-            // Sumar gastos de subtareas
-            for (Subtask st : task.getSubtasks()) {
-                if (st.getExpense() > 0 && task.getDueDate() != null) {
-                    calendar.setTimeInMillis(task.getDueDate());
-                    if (calendar.get(Calendar.MONTH) == currentMonth &&
-                            calendar.get(Calendar.YEAR) == currentYear) {
-                        total += st.getExpense();
-                    }
-                }
-            }
         }
         tvTotalExpenses.setText(String.format(Locale.getDefault(),
                 "Gastos del mes: $%.2f", total));
-    }
-
-    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    private void showNotification(String title, String content) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setContentTitle(title)
-                .setContentText(content)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setAutoCancel(true);
-        NotificationManagerCompat.from(this).notify((int) System.currentTimeMillis(), builder.build());
-    }
-
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "TATILIST Notifications";
-            String description = "Notificaciones de tareas";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
     }
 
     @Override
@@ -545,253 +454,150 @@ public class MainActivity extends AppCompatActivity {
             databaseRef.removeEventListener(tasksListener);
         }
     }
-}
 
-// --- Subtask Class ---
-class Subtask {
-    private String title;
-    private double expense;
-    private boolean completed;
+    // === CLASES INTERNAS ===
 
-    public Subtask() {}
+    static class Task {
+        private String title;
+        private String description;
+        private Long dueDate;
+        private int priority;
+        private boolean completed;
+        private double expense;
+        private String category;
+        private boolean isRecurring;
+        private String firebaseKey;
 
-    public Subtask(String title, double expense, boolean completed) {
-        this.title = title;
-        this.expense = expense;
-        this.completed = completed;
+        public Task() {}
+
+        public Task(String title, String description, Long dueDate, int priority,
+                    boolean completed, double expense, String category, boolean isRecurring) {
+            this.title = title;
+            this.description = description;
+            this.dueDate = dueDate;
+            this.priority = priority;
+            this.completed = completed;
+            this.expense = expense;
+            this.category = category;
+            this.isRecurring = isRecurring;
+        }
+
+        public String getTitle() { return title; }
+        public void setTitle(String title) { this.title = title; }
+        public String getDescription() { return description; }
+        public void setDescription(String description) { this.description = description; }
+        public Long getDueDate() { return dueDate; }
+        public void setDueDate(Long dueDate) { this.dueDate = dueDate; }
+        public int getPriority() { return priority; }
+        public void setPriority(int priority) { this.priority = priority; }
+        public boolean isCompleted() { return completed; }
+        public void setCompleted(boolean completed) { this.completed = completed; }
+        public double getExpense() { return expense; }
+        public void setExpense(double expense) { this.expense = expense; }
+        public String getCategory() { return category; }
+        public void setCategory(String category) { this.category = category; }
+        public boolean isRecurring() { return isRecurring; }
+        public void setRecurring(boolean recurring) { isRecurring = recurring; }
+        public String getFirebaseKey() { return firebaseKey; }
+        public void setFirebaseKey(String key) { this.firebaseKey = key; }
     }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-    public double getExpense() { return expense; }
-    public void setExpense(double expense) { this.expense = expense; }
-    public boolean isCompleted() { return completed; }
-    public void setCompleted(boolean completed) { this.completed = completed; }
-}
+    static class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
+        private List<Task> tasks;
+        private MainActivity activity;
 
-// --- Subtask Adapter ---
-class SubtaskAdapter extends RecyclerView.Adapter<SubtaskAdapter.ViewHolder> {
-    private List<Subtask> subtasks;
+        public TaskAdapter(List<Task> tasks, MainActivity activity) {
+            this.tasks = tasks;
+            this.activity = activity;
+        }
 
-    public SubtaskAdapter(List<Subtask> subtasks) {
-        this.subtasks = subtasks;
-    }
+        @Override
+        public TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_task, parent, false);
+            return new TaskViewHolder(view);
+        }
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_subtask, parent, false);
-        return new ViewHolder(v);
-    }
+        @Override
+        public void onBindViewHolder(TaskViewHolder holder, int position) {
+            Task task = tasks.get(position);
+            holder.tvTitle.setText(task.getTitle());
+            holder.tvDescription.setText(task.getDescription());
+            holder.cbCompleted.setChecked(task.isCompleted());
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Subtask st = subtasks.get(position);
-        holder.etTitle.setText(st.getTitle());
-        holder.etExpense.setText(st.getExpense() > 0 ? String.valueOf(st.getExpense()) : "");
-        holder.cbCompleted.setChecked(st.isCompleted());
-
-        holder.etTitle.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                st.setTitle(s.toString());
+            if (task.getExpense() > 0) {
+                holder.tvExpense.setVisibility(View.VISIBLE);
+                holder.tvExpense.setText(String.format(Locale.getDefault(), "$%.2f", task.getExpense()));
+            } else {
+                holder.tvExpense.setVisibility(View.GONE);
             }
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
 
-
-
-
-
-
-        holder.etExpense.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                try {
-                    st.setExpense(s.length() == 0 ? 0 : Double.parseDouble(s.toString()));
-                } catch (NumberFormatException ignored) {}
+            holder.tvCategory.setText(task.getCategory());
+            if (task.getDueDate() != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                holder.tvDueDate.setText(sdf.format(new Date(task.getDueDate())));
+                holder.tvDueDate.setVisibility(View.VISIBLE);
+            } else {
+                holder.tvDueDate.setVisibility(View.GONE);
             }
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-        holder.cbCompleted.setOnCheckedChangeListener((button, isChecked) -> st.setCompleted(isChecked));
-    }
 
-    @Override
-    public int getItemCount() {
-        return subtasks.size();
-    }
+            int priorityColor;
+            switch (task.getPriority()) {
+                case 1: priorityColor = 0xFFFF5252; break;
+                case 2: priorityColor = 0xFFFFAB40; break;
+                case 3: priorityColor = 0xFF69F0AE; break;
+                default: priorityColor = 0xFF90A4AE; break;
+            }
+            holder.viewPriority.setBackgroundColor(priorityColor);
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        EditText etTitle, etExpense;
-        CheckBox cbCompleted;
+            if (task.isRecurring()) {
+                holder.ivRecurring.setVisibility(View.VISIBLE);
+            } else {
+                holder.ivRecurring.setVisibility(View.GONE);
+            }
 
-        ViewHolder(View v) {
-            super(v);
-            etTitle = v.findViewById(R.id.etSubtaskTitle);
-            etExpense = v.findViewById(R.id.etSubtaskExpense);
-            cbCompleted = v.findViewById(R.id.cbSubtaskCompleted);
-        }
-    }
-}
+            holder.cbCompleted.setOnClickListener(v -> {
+                task.setCompleted(holder.cbCompleted.isChecked());
+                activity.updateTask(task);
+            });
 
-// --- Task Class (actualizada) ---
-class Task {
-    private String title;
-    private String description;
-    private Long dueDate;
-    private int priority;
-    private boolean completed;
-    private double expense;
-    private String category;
-    private boolean isRecurring;
-    private String firebaseKey;
-    private List<Subtask> subtasks;
+            holder.itemView.setOnClickListener(v -> activity.showEditDialog(task));
 
-    public Task() {}
-
-    public Task(String title, String description, Long dueDate, int priority,
-                boolean completed, double expense, String category, boolean isRecurring,
-                List<Subtask> subtasks) {
-        this.title = title;
-        this.description = description;
-        this.dueDate = dueDate;
-        this.priority = priority;
-        this.completed = completed;
-        this.expense = expense;
-        this.category = category;
-        this.isRecurring = isRecurring;
-        this.subtasks = subtasks != null ? subtasks : new ArrayList<>();
-    }
-
-    // Getters y Setters
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-    public Long getDueDate() { return dueDate; }
-    public void setDueDate(Long dueDate) { this.dueDate = dueDate; }
-    public int getPriority() { return priority; }
-    public void setPriority(int priority) { this.priority = priority; }
-    public boolean isCompleted() { return completed; }
-    public void setCompleted(boolean completed) { this.completed = completed; }
-    public double getExpense() { return expense; }
-    public void setExpense(double expense) { this.expense = expense; }
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
-    public boolean isRecurring() { return isRecurring; }
-    public void setRecurring(boolean recurring) { isRecurring = recurring; }
-    public String getFirebaseKey() { return firebaseKey; }
-    public void setFirebaseKey(String key) { this.firebaseKey = key; }
-    public List<Subtask> getSubtasks() { return subtasks; }
-    public void setSubtasks(List<Subtask> subtasks) { this.subtasks = subtasks; }
-}
-
-// --- TaskAdapter (actualizado para mostrar subtareas) ---
-class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
-    private List<Task> tasks;
-    private MainActivity activity;
-
-    public TaskAdapter(List<Task> tasks, MainActivity activity) {
-        this.tasks = tasks;
-        this.activity = activity;
-    }
-
-    @Override
-    public TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_task, parent, false);
-        return new TaskViewHolder(view);
-    }
-
-    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    @Override
-    public void onBindViewHolder(TaskViewHolder holder, int position) {
-        Task task = tasks.get(position);
-        holder.tvTitle.setText(task.getTitle());
-        holder.tvDescription.setText(task.getDescription());
-        holder.cbCompleted.setChecked(task.isCompleted());
-
-        double totalExpense = task.getExpense();
-        for (Subtask st : task.getSubtasks()) {
-            totalExpense += st.getExpense();
+            holder.itemView.setOnLongClickListener(v -> {
+                new AlertDialog.Builder(activity)
+                        .setTitle("Eliminar tarea")
+                        .setMessage("¿Estás seguro de eliminar esta tarea?")
+                        .setPositiveButton("Eliminar", (dialog, which) -> activity.deleteTask(task))
+                        .setNegativeButton("Cancelar", null)
+                        .show();
+                return true;
+            });
         }
 
-        if (totalExpense > 0) {
-            holder.tvExpense.setVisibility(View.VISIBLE);
-            holder.tvExpense.setText(String.format(Locale.getDefault(), "$%.2f", totalExpense));
-        } else {
-            holder.tvExpense.setVisibility(View.GONE);
+        @Override
+        public int getItemCount() {
+            return tasks.size();
         }
 
-        holder.tvCategory.setText(task.getCategory());
-        if (task.getDueDate() != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            holder.tvDueDate.setText(sdf.format(new Date(task.getDueDate())));
-            holder.tvDueDate.setVisibility(View.VISIBLE);
-        } else {
-            holder.tvDueDate.setVisibility(View.GONE);
-        }
+        static class TaskViewHolder extends RecyclerView.ViewHolder {
+            CheckBox cbCompleted;
+            TextView tvTitle, tvDescription, tvExpense, tvCategory, tvDueDate;
+            View viewPriority;
+            ImageView ivRecurring;
 
-        int priorityColor;
-        switch (task.getPriority()) {
-            case 1: priorityColor = 0xFFFF5252; break;
-            case 2: priorityColor = 0xFFFFAB40; break;
-            case 3: priorityColor = 0xFF69F0AE; break;
-            default: priorityColor = 0xFF90A4AE; break;
-        }
-        holder.viewPriority.setBackgroundColor(priorityColor);
-
-        if (task.isRecurring()) {
-            holder.ivRecurring.setVisibility(View.VISIBLE);
-        } else {
-            holder.ivRecurring.setVisibility(View.GONE);
-        }
-
-        holder.cbCompleted.setOnClickListener(v -> {
-            task.setCompleted(holder.cbCompleted.isChecked());
-            activity.updateTask(task);
-        });
-
-        holder.itemView.setOnClickListener(v -> activity.showEditDialog(task));
-
-        holder.itemView.setOnLongClickListener(v -> {
-            new AlertDialog.Builder(activity)
-                    .setTitle("Eliminar tarea")
-                    .setMessage("¿Estás seguro de eliminar esta tarea?")
-                    .setPositiveButton("Eliminar", (dialog, which) -> activity.deleteTask(task))
-                    .setNegativeButton("Cancelar", null)
-                    .show();
-            return true;
-        });
-    }
-
-    @Override
-    public int getItemCount() {
-        return tasks.size();
-    }
-
-    static class TaskViewHolder extends RecyclerView.ViewHolder {
-        CheckBox cbCompleted;
-        TextView tvTitle, tvDescription, tvExpense, tvCategory, tvDueDate;
-        View viewPriority;
-        ImageView ivRecurring;
-
-        public TaskViewHolder(View itemView) {
-            super(itemView);
-            cbCompleted = itemView.findViewById(R.id.cbCompleted);
-            tvTitle = itemView.findViewById(R.id.tvTitle);
-            tvDescription = itemView.findViewById(R.id.tvDescription);
-            tvExpense = itemView.findViewById(R.id.tvExpense);
-            tvCategory = itemView.findViewById(R.id.tvCategory);
-            tvDueDate = itemView.findViewById(R.id.tvDueDate);
-            viewPriority = itemView.findViewById(R.id.viewPriority);
-            ivRecurring = itemView.findViewById(R.id.ivRecurring);
+            public TaskViewHolder(View itemView) {
+                super(itemView);
+                cbCompleted = itemView.findViewById(R.id.cbCompleted);
+                tvTitle = itemView.findViewById(R.id.tvTitle);
+                tvDescription = itemView.findViewById(R.id.tvDescription);
+                tvExpense = itemView.findViewById(R.id.tvExpense);
+                tvCategory = itemView.findViewById(R.id.tvCategory);
+                tvDueDate = itemView.findViewById(R.id.tvDueDate);
+                viewPriority = itemView.findViewById(R.id.viewPriority);
+                ivRecurring = itemView.findViewById(R.id.ivRecurring);
+            }
         }
     }
+
+
 }

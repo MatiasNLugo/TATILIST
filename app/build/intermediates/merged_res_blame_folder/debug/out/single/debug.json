@@ -1,71 +1,83 @@
 [
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/layout_item_task.xml.flat",
-        "source": "com.example.tatilist.app-main-41:/layout/item_task.xml"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/mipmap-xxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/mipmap-mdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.tatilist.app-main-41:/mipmap-mdpi/ic_launcher_round.webp"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/layout_dialog_add_task.xml.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/layout/dialog_add_task.xml"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/mipmap-xxxhdpi_ic_launcher.webp.flat",
-        "source": "com.example.tatilist.app-main-41:/mipmap-xxxhdpi/ic_launcher.webp"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/layout_dialog_join_list.xml.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/layout/dialog_join_list.xml"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/mipmap-xxhdpi_ic_launcher.webp.flat",
-        "source": "com.example.tatilist.app-main-41:/mipmap-xxhdpi/ic_launcher.webp"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/drawable/ic_launcher_foreground.xml"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "com.example.tatilist.app-main-41:/mipmap-anydpi-v26/ic_launcher_round.xml"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/layout_item_task.xml.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/layout/item_task.xml"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/layout_item_subtask.xml.flat",
-        "source": "com.example.tatilist.app-main-41:/layout/item_subtask.xml"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/mipmap-xhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/layout_dialog_add_task.xml.flat",
-        "source": "com.example.tatilist.app-main-41:/layout/dialog_add_task.xml"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/mipmap-hdpi_ic_launcher.webp.flat",
-        "source": "com.example.tatilist.app-main-41:/mipmap-hdpi/ic_launcher.webp"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/anim_item_animation_fall_down.xml.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/anim/item_animation_fall_down.xml"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.tatilist.app-main-41:/mipmap-xxxhdpi/ic_launcher_round.webp"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/mipmap-xhdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.tatilist.app-main-41:/mipmap-xxhdpi/ic_launcher_round.webp"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/mipmap-mdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/mipmap-xhdpi_ic_launcher.webp.flat",
-        "source": "com.example.tatilist.app-main-41:/mipmap-xhdpi/ic_launcher.webp"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/anim_layout_animation_fall_down.xml.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/anim/layout_animation_fall_down.xml"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/mipmap-mdpi_ic_launcher.webp.flat",
-        "source": "com.example.tatilist.app-main-41:/mipmap-mdpi/ic_launcher.webp"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/mipmap-xxxhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/layout_dialog_join_list.xml.flat",
-        "source": "com.example.tatilist.app-main-41:/layout/dialog_join_list.xml"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/layout_item_subtask.xml.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/layout/item_subtask.xml"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/mipmap-hdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.tatilist.app-main-41:/mipmap-hdpi/ic_launcher_round.webp"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/mipmap-mdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/mipmap-xhdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.tatilist.app-main-41:/mipmap-xhdpi/ic_launcher_round.webp"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/mipmap-xxxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "com.example.tatilist.app-main-41:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/layout_activity_main.xml.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/layout/activity_main.xml"
     },
     {
-        "merged": "com.example.tatilist.app-merged_res-39:/drawable_ic_launcher_foreground.xml.flat",
-        "source": "com.example.tatilist.app-main-41:/drawable/ic_launcher_foreground.xml"
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-merged_res-39:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "/home/Matias/.gradle/daemon/9.0-milestone-1/com.example.tatilist.app-main-41:/mipmap-hdpi/ic_launcher_round.webp"
     },
     {
         "merged": "com.example.tatilist.app-merged_res-39:/layout_activity_main.xml.flat",

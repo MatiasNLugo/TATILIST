@@ -1,50 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    app:cardBackgroundColor="#CCBDBD"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    android:layout_marginVertical="4dp"
+    android:layout_marginHorizontal="6dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="16dp">
 
         <View
             android:id="@+id/viewPriority"
-            android:layout_width="4dp"
+            android:layout_width="6dp"
             android:layout_height="match_parent"
-            android:background="#FF5252" />
+            android:layout_marginEnd="12dp"
+            android:background="#FF5252"
+            android:backgroundTint="@color/error" />
 
         <CheckBox
             android:id="@+id/cbCompleted"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="8dp" />
+            android:layout_gravity="top"
+            android:minWidth="48dp"
+            android:minHeight="48dp" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="12dp">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/tvTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Título de la tarea"
-                    android:textColor="#212121"
+                    android:text="Título"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -54,59 +60,52 @@
                     android:layout_height="20dp"
                     android:layout_marginStart="8dp"
                     android:src="@android:drawable/ic_popup_sync"
-                    android:visibility="gone" />
-
+                    android:visibility="gone"
+                    app:tint="@color/primary" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tvDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="6dp"
                 android:text="Descripción"
-                android:textColor="#757575"
+                android:textColor="#616161"
                 android:textSize="14sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-                <TextView
+                <com.google.android.material.chip.Chip
                     android:id="@+id/tvCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="4dp"
                     android:text="Categoría"
-                    android:textColor="#424242"
-                    android:textSize="12sp" />
+                    style="@style/Widget.Material3.Chip.Assist" />
 
                 <TextView
                     android:id="@+id/tvExpense"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:background="#C8E6C9"
-                    android:padding="4dp"
+                    android:layout_marginStart="12dp"
                     android:text="$0.00"
-                    android:textColor="#2E7D32"
-                    android:textSize="12sp"
+                    android:textColor="@color/primary"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvDueDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="12dp"
                     android:text="01/01/2024"
-                    android:textColor="#FF6F00"
-                    android:textSize="12sp" />
-
+                    android:textColor="#D32F2F"
+                    android:textSize="13sp" />
             </LinearLayout>
-
         </LinearLayout>
-
     </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
